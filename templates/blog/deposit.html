@@ -1,0 +1,24 @@
+{{ define "deposit" }}
+
+<div id="deposit">
+
+    <br>
+    <br>
+
+    <span>Отложил сегодня - {{ .TotalDay }}</span><br><br>
+
+    <form hx-post="/deposit" hx-target="#deposit" hx-swap="outerHTML">
+        <input type="text" name="amount" inputmode="numeric" placeholder="отложил до 50%" autocomplete="off">
+        <button type="submit">+</button>
+    </form>
+
+    <button type="button" hx-post="/delete-deposit" hx-target="#deposit" hx-swap="outerHTML">Del</button>
+
+    <div>
+        неделя: {{ .TotalWeek }} &nbsp;
+        месяц: {{ .TotalMonth }} &nbsp;
+        год: {{ .TotalYear }}
+    </div>
+
+</div>
+{{ end }}

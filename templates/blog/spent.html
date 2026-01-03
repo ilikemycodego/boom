@@ -1,0 +1,23 @@
+{{ define "spen" }}
+
+<div id="spen">
+
+    <span>Сегодня потрачено - {{ .TotalDay }}</span><br><br>
+
+    <form hx-post="/spen" hx-target="#spen" hx-swap="outerHTML">
+        <input type="text" name="amount" inputmode="numeric" placeholder="потратил" autocomplete="off">
+        <button type="submit">+</button>
+    </form>
+
+    <!-- удалить последний расход -->
+    <form hx-post="/delete" hx-target="#spen" hx-swap="outerHTML" style="margin-top:8px;">
+        <button type="submit">Del</button>
+    </form>
+
+    <div id="result">
+        <span>Неделя: {{ .TotalWeek }}</span>&nbsp;
+        <span>Месяц: {{ .TotalMonth }}</span>&nbsp;
+        <span>Год: {{ .TotalYear }}</span><br>
+    </div>
+</div>
+{{ end }}

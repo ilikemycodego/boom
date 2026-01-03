@@ -1,0 +1,39 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/static/img/robi.png" type="image/png">
+  <link rel="stylesheet" href="/static/css/logo.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+  <link rel="stylesheet" href="/static/css/menu.css">
+  <link rel="stylesheet" href="/static/css/heart.css">
+  <title>hagac.com</title>
+</head>
+
+<body theme="{{ .Theme }}">
+  <div class="band">
+    <div class="main">
+      {{ block "logo" . }}{{ end }}
+
+
+      <div class="content" id="content">
+
+
+        <div id="spen" hx-get="/spen" hx-trigger="load" hx-swap="outerHTML"></div>
+
+        <div id="deposit" hx-get="/deposit" hx-trigger="load" hx-swap="outerHTML"></div>
+
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+</body>
+
+</html>
+{{ end }}
