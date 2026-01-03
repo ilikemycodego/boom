@@ -2,16 +2,15 @@
 
 <div id="spen">
 
-    <span>Сегодня потрачено - {{ .TotalDay }}</span><br><br>
-
+    <span>Платежи сегодня - {{ .TotalDay }}</span>
     <form hx-post="/spen" hx-target="#spen" hx-swap="outerHTML">
-        <input type="text" name="amount" inputmode="numeric" placeholder="потратил" autocomplete="off">
+        <input type="text" name="amount" inputmode="numeric" placeholder="потрачено" autocomplete="off">
         <button type="submit">+</button>
     </form>
 
     <!-- удалить последний расход -->
-    <form hx-post="/delete" hx-target="#spen" hx-swap="outerHTML" style="margin-top:8px;">
-        <button type="submit">Del</button>
+    <form hx-post="/delete" hx-target="#spen" hx-swap="outerHTML">
+        <button type="submit">Undo</button>
     </form>
 
     <div id="result">
