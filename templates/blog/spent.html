@@ -1,17 +1,26 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
 {{ define "spen" }}
 
 <div id="spen">
 
-    <span>Платежи сегодня - {{ .TotalDay }}</span>
+    <h3>Платежи сегодня: {{ .TotalDay }}</h3>
     <form hx-post="/spen" hx-target="#spen" hx-swap="outerHTML">
         <input type="text" name="amount" inputmode="numeric" placeholder="потрачено" autocomplete="off">
         <button type="submit">+</button>
     </form>
 
     <!-- удалить последний расход -->
-    <form hx-post="/delete" hx-target="#spen" hx-swap="outerHTML">
-        <button type="submit">Undo</button>
-    </form>
+    <a href="#" hx-post="/delete" hx-target="#spen" hx-swap="outerHTML" hx-confirm="Удалить последнюю запись?"
+        onclick="return false;">Undo</a>
 
     <div id="result">
         <span>Неделя: {{ .TotalWeek }}</span>&nbsp;

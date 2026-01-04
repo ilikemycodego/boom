@@ -29,4 +29,9 @@ func RegisterRoutes(m *mux.Router, tmpl *template.Template, dbConn *sql.DB) {
 	m.HandleFunc("/deposit", handlers.DepositAddHandler(tmpl, dbConn)).Methods("POST")
 
 	m.HandleFunc("/delete-deposit", handlers.DeleteLastDepositTodayHandler(tmpl, dbConn)).Methods("POST")
+
+	m.HandleFunc("/goal", handlers.GoalHandler(tmpl, dbConn)).Methods("GET", "POST")
+
+	m.HandleFunc("/clear-all-data", handlers.ClearAllDataHandler(dbConn)).Methods("POST")
+
 }

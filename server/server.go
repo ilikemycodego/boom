@@ -1,21 +1,20 @@
 package server
 
 import (
-	"boom/db"
+	"database/sql" // Добавьте этот импорт
 	"html/template"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-// NewServer собирает шаблоны, роуты и возвращает готовый http.Handler
-
-func NewServer() http.Handler {
+// Теперь функция принимает уже открытое соединение dbConn
+func NewServer(dbConn *sql.DB) http.Handler {
 	tmpl := template.Must(
 		template.New("").Funcs(template.FuncMap{}).ParseGlob("templates/**/*.html"),
 	)
 
-	dbConn := db.OpenDB("data.db")
+	// УДАЛИЛИ строки с db.OpenDB("data.db"), так как база приходит снаружи
 
 	r := mux.NewRouter()
 	r.Use(RequestLogger)
@@ -23,6 +22,7 @@ func NewServer() http.Handler {
 	r.PathPrefix("/static/").
 		Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// Передаем полученный dbConn дальше в роуты
 	RegisterRoutes(r, tmpl, dbConn)
 
 	return r

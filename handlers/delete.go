@@ -78,3 +78,42 @@ WHERE id = (
 		}
 	}
 }
+
+// удаляет все данные
+func ClearAllDataHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Используем транзакцию, чтобы убедиться, что обе операции либо выполнятся, либо нет
+		tx, err := db.Begin()
+		if err != nil {
+			log.Println("❌ clear all data begin transaction:", err)
+			http.Error(w, "DB error", http.StatusInternalServerError)
+			return
+		}
+
+		// Очищаем таблицу расходов
+		if _, err := tx.Exec(`DELETE FROM expenses`); err != nil {
+			tx.Rollback() // Откатываем изменения, если что-то пошло не так
+			log.Println("❌ clear all data delete expenses:", err)
+			http.Error(w, "DB error", http.StatusInternalServerError)
+			return
+		}
+
+		// Очищаем таблицу депозитов
+		if _, err := tx.Exec(`DELETE FROM deposits`); err != nil {
+			tx.Rollback() // Откатываем изменения
+			log.Println("❌ clear all data delete deposits:", err)
+			http.Error(w, "DB error", http.StatusInternalServerError)
+			return
+		}
+
+		// Подтверждаем транзакцию
+		if err := tx.Commit(); err != nil {
+			log.Println("❌ clear all data commit:", err)
+			http.Error(w, "DB error", http.StatusInternalServerError)
+			return
+		}
+
+		// После успешной очистки перенаправляем пользователя на главную страницу
+		w.Header().Set("HX-Redirect", "/")
+	}
+}

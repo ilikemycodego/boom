@@ -1,0 +1,28 @@
+/* static/css/goal.css */
+
+.goal{
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.progress-track {
+    background: #eee;
+    width: 100%;
+    height: 20px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: #4caf50;
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Скроем стрелочки у поля ввода цели, раз уж мы в отдельном файле */
+.goal input[type=number]::-webkit-inner-spin-button,
+.goal input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
