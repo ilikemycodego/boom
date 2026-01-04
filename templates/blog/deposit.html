@@ -10,11 +10,7 @@
 <!--  -->
 {{ define "deposit" }}
 
-
-
 <div id="deposit">
-
-    <br>
 
     <h3>Отложено сегодня: {{ .TotalDay }}</h3>
 
@@ -23,14 +19,19 @@
         <button type="submit">+</button>
     </form>
 
-
-    <a href="#" hx-post="/delete-deposit" hx-target="#deposit" hx-swap="outerHTML"
-        hx-confirm="Удалить последнюю запись?" onclick="return false;">Undo</a>
-
     <div>
         Неделя: {{ .TotalWeek }} &nbsp;
         Месяц: {{ .TotalMonth }} &nbsp;
         Год: {{ .TotalYear }}
     </div>
+
+    <a href="#" hx-post="/delete-deposit" hx-target="#deposit" hx-swap="outerHTML"
+        hx-confirm="Удалить последнюю запись?" onclick="return false;">Undo</a>
+    |
+    <a href="#" hx-post="/clear-all-data" hx-confirm="Вы уверены, что хотите удалить ВСЕ траты и депозиты?"
+        style="color: rgb(245, 165, 165); text-decoration: none; cursor: pointer;">
+        Delete data
+    </a>
+
 </div>
 {{ end }}

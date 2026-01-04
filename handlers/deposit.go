@@ -68,6 +68,9 @@ func DepositAddHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Это специальный заголовок HTMX, который говорит клиенту запустить событие "depositsUpdated"
+		w.Header().Set("HX-Trigger", "depositsUpdated")
+
 		data, err := loadDepositTotals(db)
 		if err != nil {
 			log.Println("❌ loadDepositTotals:", err)

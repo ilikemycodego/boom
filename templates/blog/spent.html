@@ -18,14 +18,17 @@
         <button type="submit">+</button>
     </form>
 
-    <!-- удалить последний расход -->
-    <a href="#" hx-post="/delete" hx-target="#spen" hx-swap="outerHTML" hx-confirm="Удалить последнюю запись?"
-        onclick="return false;">Undo</a>
+
 
     <div id="result">
         <span>Неделя: {{ .TotalWeek }}</span>&nbsp;
         <span>Месяц: {{ .TotalMonth }}</span>&nbsp;
         <span>Год: {{ .TotalYear }}</span><br>
     </div>
+
+    <!-- удалить последний расход -->
+    <a href="#" hx-post="/delete" hx-target="#spen" hx-swap="outerHTML" hx-confirm="Удалить последнюю запись?"
+        onclick="return false;">Undo</a>
+
 </div>
 {{ end }}
