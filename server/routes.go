@@ -34,4 +34,6 @@ func RegisterRoutes(m *mux.Router, tmpl *template.Template, dbConn *sql.DB) {
 
 	m.HandleFunc("/clear-all-data", handlers.ClearAllDataHandler(dbConn)).Methods("POST")
 
+	m.HandleFunc("/statistics", handlers.StatisticsHandler(tmpl, dbConn)).Methods("GET")
+
 }
