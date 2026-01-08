@@ -1,7 +1,7 @@
 package server
 
 import (
-	"database/sql" // Добавьте этот импорт
+	"database/sql"
 	"html/template"
 	"net/http"
 
@@ -14,8 +14,7 @@ func NewServer(dbConn *sql.DB) http.Handler {
 		template.New("").Funcs(template.FuncMap{}).ParseGlob("templates/**/*.html"),
 	)
 
-	// УДАЛИЛИ строки с db.OpenDB("data.db"), так как база приходит снаружи
-
+	// -
 	r := mux.NewRouter()
 	r.Use(RequestLogger)
 
@@ -23,7 +22,8 @@ func NewServer(dbConn *sql.DB) http.Handler {
 		Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// Передаем полученный dbConn дальше в роуты
-	RegisterRoutes(r, tmpl, dbConn)
+	RoutesUI(r, tmpl, dbConn)
+	RoutesFood(r, tmpl, dbConn)
 
 	return r
 }

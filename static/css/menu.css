@@ -20,7 +20,7 @@ html, body {
 	display: grid;
 	grid-template-columns: 1fr min(100%, 800px) 1fr;
 	min-height: 100vh;
-	background: #7a7878;
+
 
 	background-color: var(--background-band-color);
 }
@@ -29,15 +29,18 @@ html, body {
 
 
 	grid-column: 2;            /* строго в центре */
-	background: white;
+
 	padding:  17px 17px 0 17px;                /* отступы в центре */
     
 
-        position: relative;  /* чтобы меню абсолютное было относительно .main */
-
+     
 	background-color: var(--background-color);
 	color: var(--text-color);
 }
 
-
+.menu  {
+    display: grid;
+	grid-template-columns: 1fr  1fr  1fr;
+	text-align: center;
+}
 
