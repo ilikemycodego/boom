@@ -1,0 +1,29 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "goal" }}
+<!-- Атрибуты должны быть ЗДЕСЬ, на самом верхнем уровне блока -->
+<div id="goal" class="goal" hx-get="/goal" hx-trigger="depositsUpdated from:body" hx-swap="outerHTML">
+
+    <h3>Total: {{ .Current }} | Goal: {{ .Target }}</h3>
+
+    <div class="progress-track">
+        <div class="progress-fill" style="width: {{ .Percent }}%;"></div>
+    </div>
+
+    <p>{{ .Percent }}% Completed</p>
+
+    <!-- Форма остается простой, она только отправляет новую цель -->
+    <form hx-post="/goal" hx-target="#goal" hx-swap="outerHTML">
+        <input type="number" name="target" placeholder="Задать цель" required>
+        <button type="submit">Add</button>
+    </form>
+</div>
+{{ end }}

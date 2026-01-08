@@ -15,8 +15,8 @@
     <h3>Saved today: {{ .TotalDay }}</h3>
 
     <form hx-post="/deposit" hx-target="#deposit" hx-swap="outerHTML">
-        <input type="text" name="amount" inputmode="numeric" placeholder="отложите до 50%" autocomplete="off">
-        <button type="submit">+</button>
+        <input type="text" name="amount" inputmode="numeric" placeholder="Enter the deposit" autocomplete="off">
+        <button type="submit">Add</button>
     </form>
 
 

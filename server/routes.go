@@ -4,8 +4,6 @@ import (
 	"boom/handlers"
 	"database/sql"
 
-	"boom/proxy"
-
 	"html/template"
 
 	"github.com/gorilla/mux"
@@ -13,9 +11,6 @@ import (
 
 // RegisterRoutes регистрирует маршруты через Gorilla mux
 func RegisterRoutes(m *mux.Router, tmpl *template.Template, dbConn *sql.DB) {
-
-	// 🛰️ Подключаем все прокси
-	proxy.ControlProxy(m)
 
 	m.HandleFunc("/", handlers.BaseHandler(tmpl))
 
@@ -30,7 +25,8 @@ func RegisterRoutes(m *mux.Router, tmpl *template.Template, dbConn *sql.DB) {
 
 	m.HandleFunc("/delete-deposit", handlers.DeleteLastDepositTodayHandler(tmpl, dbConn)).Methods("POST")
 
-	m.HandleFunc("/goal", handlers.GoalHandler(tmpl, dbConn)).Methods("GET", "POST")
+	m.HandleFunc("/goal", handlers.GoalBarHandler(tmpl, dbConn)).Methods("GET")
+	m.HandleFunc("/goal-target", handlers.GoalTargetHandler(tmpl, dbConn)).Methods("GET", "POST")
 
 	m.HandleFunc("/clear-all-data", handlers.ClearAllDataHandler(dbConn)).Methods("POST")
 

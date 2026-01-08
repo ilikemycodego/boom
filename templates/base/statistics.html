@@ -18,35 +18,39 @@
 
     <h3>Spent</h3>
     <div id="result-expenses">
-        <span>wk: {{ .Spen.TotalWeek }}</span>&nbsp;
-        <span>mo: {{ .Spen.TotalMonth }}</span>&nbsp;
-        <span>yr: {{ .Spen.TotalYear }}</span><br>
+        <span>week: {{ .Spen.TotalWeek }}</span>&nbsp;
+        <span>month: {{ .Spen.TotalMonth }}</span>&nbsp;
+        <span>year: {{ .Spen.TotalYear }}</span>
     </div>
 
-    <a href="#" hx-post="/delete" hx-target="#content" hx-swap="outerHTML" hx-confirm="Удалить последнюю запись?"
+    <a href="#" hx-post="/delete" hx-target="#content" hx-swap="outerHTML" hx-confirm="Delete the last expense entry?"
         onclick="return false;">Undo spent</a>
 
-    <hr>
-
     <h3>Saved</h3>
+
+
     <div id="result-deposits">
-        wk: {{ .Deposit.TotalWeek }} &nbsp;
-        mo: {{ .Deposit.TotalMonth }} &nbsp;
-        yr: {{ .Deposit.TotalYear }}
+        <span>week: {{ .Deposit.TotalWeek }}</span>&nbsp;
+        <span>month: {{ .Deposit.TotalMonth }}</span>&nbsp;
+        <span>year: {{ .Deposit.TotalYear }}</span>
     </div>
 
     <a href="#" hx-post="/delete-deposit" hx-target="#content" hx-swap="outerHTML"
-        hx-confirm="Удалить последнюю запись?" onclick="return false;">Undo deposit</a>
+        hx-confirm="Delete the last savings entry?" onclick="return false;">Undo deposit</a>
 
     <br>
     <br>
 
     <a href="#" hx-post="/clear-all-data" hx-target="#content" hx-swap="outerHTML"
-        hx-confirm="Вы уверены, что хотите удалить ВСЕ траты и депозиты?"
+        hx-confirm="Delete all expenses and deposits?"
         style="color: rgb(245, 165, 165); text-decoration: none; cursor: pointer;" onclick="return false;">Delete
         data</a>
 
-    <br><br>
+    <div id="goal-target" hx-get="/goal-target" hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <hr>
+    <br>
+
     <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
 
 </div>

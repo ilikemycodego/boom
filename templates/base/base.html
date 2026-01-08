@@ -24,6 +24,7 @@
 
       <div class="content" id="content">
 
+        <div id="goal" hx-get="/goal" hx-trigger="load" hx-swap="outerHTML"></div>
 
         <div id="spen" hx-get="/spen" hx-trigger="load" hx-swap="outerHTML"></div>
 
@@ -33,10 +34,16 @@
 
 
 
-        <div id="goal" hx-get="/goal" hx-trigger="load" hx-swap="outerHTML"></div>
 
-        <a href="#" hx-get="/statistics" hx-target="#content" hx-swap="outerHTML" onclick="return false;">Statistics</a>
 
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px;">
+
+          <a href="#" hx-get="/statistics" hx-target="#content" hx-swap="outerHTML"
+            onclick="return false;">Statistics</a>
+
+          <span>support@roby.my</span>
+
+        </div>
       </div>
 
     </div>
