@@ -1,0 +1,24 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+
+{{ define "goal_bar" }}
+<div id="goal" class="goal" hx-get="/goal" hx-trigger="depositsUpdated from:body, goalUpdated from:body"
+    hx-swap="outerHTML">
+
+    <h3>Total: {{ .Current }} | Goal: {{ .Target }}</h3>
+
+    <div class="progress-track">
+        <div class="progress-fill" style="width: {{ .Percent }}%;"></div>
+    </div>
+
+    <p>Completed {{ .Percent }} % </p>
+</div>
+{{ end }}

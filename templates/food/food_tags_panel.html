@@ -1,0 +1,41 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "food_tags_panel" }}
+<div class="tags-panel">
+  <h3>Метки еды</h3>
+
+  <form hx-post="/food/tags" hx-target="#tags-panel" hx-swap="innerHTML">
+    <input type="text" name="name" placeholder="Например: хлеб" autocomplete="off">
+    <button type="submit">Добавить</button>
+
+    <button type="button" hx-get="/food" hx-target="#content" hx-swap="outerHTML">
+      Назад
+    </button>
+
+  </form>
+
+
+
+  <div class="tags-list">
+    {{ range .Tags }}
+    <div class="tag-row">
+      <span>{{ .Name }}</span>
+
+      <button type="button" class="danger" hx-delete="/food/tags/{{ .ID }}" hx-target="#tags-panel" hx-swap="innerHTML">
+        ❌
+      </button>
+    </div>
+    {{ else }}
+    <div class="muted">Пока нет меток.</div>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

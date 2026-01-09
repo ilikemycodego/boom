@@ -1,0 +1,17 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "food_save_result" }}
+{{ if .OK }}
+<div class="notice ok">{{ .Message }}</div>
+{{ else }}
+<div class="notice bad">{{ .Message }}</div>
+{{ end }}
+{{ end }}

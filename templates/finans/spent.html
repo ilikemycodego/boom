@@ -1,0 +1,23 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "spen" }}
+
+<div id="spen">
+
+    <h3>Spent today: {{ .TotalDay }}</h3>
+    <form hx-post="/spen" hx-target="#spen" hx-swap="outerHTML">
+        <input type="text" name="amount" inputmode="numeric" placeholder="Enter the expense" autocomplete="off">
+        <button type="submit">Add</button>
+    </form>
+
+
+</div>
+{{ end }}

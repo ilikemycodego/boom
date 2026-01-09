@@ -9,16 +9,49 @@
 
 <!--  -->
 {{ define "food" }}
+<div id="content">
 
-<div id="food">
+    <!--  <div>Сегодня: <b>{{ .Today }}</b></div>  -->
 
-    <h1>Еда</h1>
+    <form method="post" hx-post="/food/entry" hx-target="#food-save-result" hx-swap="innerHTML">
+
+        <input type="hidden" name="entry_date" value="{{ .Today }}">
+
+        <div id="food-tags-cloud" class="chips">
+            {{ template "food_cloud" . }}
+        </div>
+
+        <div class="food-actions">
+            <button type="submit">Сохранить</button>
+            <button type="reset">Очистить</button>
+        </div>
+
+    </form>
+
+    <div id="food-save-result"></div>
+
+    <div class="food-header">
+
+        <button type="button" hx-get="/food/tags" hx-target="#tags-panel" hx-swap="innerHTML">
+            ⚙️ Метки
+        </button>
+
+    </div>
+
+    <!-- панель управления метками -->
+    <div id="tags-panel"></div>
 
     <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
 
+    <hr>
 
+    <div> <span>уровень плотности еды</span>
+        <br>
+        осталось чувство голода <input type="checkbox">
+        наелся <input type="checkbox">
+        объелся<input type="checkbox">
 
-
+    </div>
 
 </div>
 {{ end }}
