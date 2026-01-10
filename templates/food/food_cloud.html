@@ -9,21 +9,20 @@
 
 <!--  -->
 {{ define "food_cloud" }}
+
 {{ range .Tags }}
-<label class="chip">
 
-    <span>{{ .Name }}</span>
-    <input type="checkbox" name="tag_id" value="{{ .ID }}" {{ if .Selected }}checked{{ end }}>
+<a href="#" class="chip-link" hx-post="/food/select" hx-target="#food-selected-inner" hx-include="#food-form"
+    hx-swap="innerHTML" hx-vals='{"add_tag_id":"{{ .ID }}"}' hx-push-url="false">
 
-</label>
+    {{ .Name }}
+
+</a>
+
 {{ else }}
-<div class="muted">Метки пока не созданы. Нажми “⚙️ Метки” и добавь первую.</div>
-{{ end }}
+
+<div class="muted">No tags yet. Tap “⚙️ Tags” to add your first one.</div>
+
 {{ end }}
 
-{{ define "food_cloud_oob" }}
-<!-- hx-swap-oob: обновляем облако меток без перезагрузки страницы -->
-<div id="food-tags-cloud" class="chips" hx-swap-oob="true">
-    {{ template "food_cloud" . }}
-</div>
 {{ end }}

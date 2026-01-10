@@ -1,0 +1,38 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+
+{{ define "food__statistics" }}
+<div id="food__statistics">
+    <h3>Food - By Day</h3>
+
+    {{ if .Stats }}
+    <div class="stats-list">
+        {{ range .Stats }}
+        <div class="stat-row">
+            <b>{{ .Day }}</b>
+            <div class="muted">
+                {{ if .Tags }}{{ .Tags }}{{ else }}— пусто —{{ end }}
+            </div>
+        </div>
+
+        <hr style="border:0; border-top:0.1px solid #ccc;">
+
+        {{ end }}
+    </div>
+    {{ else }}
+    <div class="muted">No saved days yet.</div>
+    {{ end }}
+
+
+
+    <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
+
+    {{ end }}

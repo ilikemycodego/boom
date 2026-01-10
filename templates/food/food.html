@@ -8,12 +8,14 @@
 
 
 <!--  -->
+
+
 {{ define "food" }}
 <div id="content">
 
-    <!--  <div>Сегодня: <b>{{ .Today }}</b></div>  -->
+    <h3>Meal Log</h3>
 
-    <form method="post" hx-post="/food/entry" hx-target="#food-save-result" hx-swap="innerHTML">
+    <form id="food-form" method="post" hx-post="/food/entry" hx-target="#content" hx-swap="outerHTML">
 
         <input type="hidden" name="entry_date" value="{{ .Today }}">
 
@@ -21,37 +23,57 @@
             {{ template "food_cloud" . }}
         </div>
 
-        <div class="food-actions">
-            <button type="submit">Сохранить</button>
-            <button type="reset">Очистить</button>
+        <div id="food-selected">
+            <div id="food-selected-inner">
+                {{ template "food_selected" .SelectedTags }}
+            </div>
         </div>
 
     </form>
+    <hr style="border:0; border-top:0.1px solid #ccc;">
+    <div>
+        <span>Satiety level :</span><br>
 
-    <div id="food-save-result"></div>
+        <label>Still hungry
+            <input type="radio" name="satiety" value="hungry">
 
-    <div class="food-header">
+        </label><br>
 
-        <button type="button" hx-get="/food/tags" hx-target="#tags-panel" hx-swap="innerHTML">
-            ⚙️ Метки
+        <label>Satisfied
+            <input type="radio" name="satiety" value="ok">
+
+        </label><br>
+
+        <label>Too full
+            <input type="radio" name="satiety" value="full">
+
+        </label><br>
+    </div>
+
+    <hr style="border:0; border-top:0.5px solid #ccc;">
+
+
+    <div class="food-actions">
+
+        <button type="submit">Save</button>
+
+        <button type="button" hx-post="/food/clear" hx-target="#food-selected-inner" hx-swap="innerHTML">
+            Clear
         </button>
 
     </div>
 
-    <!-- панель управления метками -->
-    <div id="tags-panel"></div>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px;">
 
-    <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
+        <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
 
-    <hr>
 
-    <div> <span>уровень плотности еды</span>
-        <br>
-        осталось чувство голода <input type="checkbox">
-        наелся <input type="checkbox">
-        объелся<input type="checkbox">
-
+        <button type="button" hx-get="/food/tags" hx-target="#content" hx-swap="outerHTML">
+            ⚙️ Tags
+        </button>
     </div>
-
+    <a href="#" hx-get="/food/statistics" hx-target="#content" hx-swap="outerHTML" hx-push-url="false">
+        Statistics
+    </a>
 </div>
 {{ end }}

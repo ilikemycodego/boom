@@ -27,14 +27,13 @@ CREATE TABLE IF NOT EXISTS food_tags (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Записи по дням (одна запись на дату)
+-- Записи еды (каждое сохранение = новая запись, дата НЕ уникальна)
 CREATE TABLE IF NOT EXISTS food_entries (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  entry_date TEXT NOT NULL UNIQUE, -- YYYY-MM-DD
+  entry_date TEXT NOT NULL, -- YYYY-MM-DD
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
--- Связь "запись дня" <-> "метка" (many-to-many)
+-- Связь "запись" <-> "метка"
 CREATE TABLE IF NOT EXISTS food_entry_tags (
   entry_id INTEGER NOT NULL,
   tag_id   INTEGER NOT NULL,
@@ -43,6 +42,7 @@ CREATE TABLE IF NOT EXISTS food_entry_tags (
   FOREIGN KEY (tag_id)   REFERENCES food_tags(id)   ON DELETE CASCADE
 );
 
--- Индексы (не обязательно, но полезно)
+-- Индексы
 CREATE INDEX IF NOT EXISTS idx_food_entry_tags_entry_id ON food_entry_tags(entry_id);
 CREATE INDEX IF NOT EXISTS idx_food_entry_tags_tag_id   ON food_entry_tags(tag_id);
+CREATE INDEX IF NOT EXISTS idx_food_entries_entry_date  ON food_entries(entry_date);

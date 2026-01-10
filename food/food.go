@@ -18,29 +18,17 @@ func FoodHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc {
 
 		tags, err := ListTags(db)
 		if err != nil {
-			log.Printf("[FoodHandler] ❌ ListTags: %v", err)
 			http.Error(w, "Ошибка загрузки меток", http.StatusInternalServerError)
 			return
 		}
 
-		selected, err := GetSelectedTagIDs(db, day)
-		if err != nil {
-			log.Printf("[FoodHandler] ❌ GetSelectedTagIDs: %v", err)
-			http.Error(w, "Ошибка загрузки выбранных меток", http.StatusInternalServerError)
-			return
-		}
-
-		for i := range tags {
-			tags[i].Selected = selected[tags[i].ID]
-		}
-
 		data := FoodPageData{
-			Today: day,
-			Tags:  tags,
+			Today:        day,
+			Tags:         tags,
+			SelectedTags: []Tag{}, // ✅ всегда пусто
 		}
 
 		if err := tmpl.ExecuteTemplate(w, "food", data); err != nil {
-			log.Printf("[FoodHandler] ❌ template food: %v", err)
 			http.Error(w, "Ошибка отображения страницы", http.StatusInternalServerError)
 			return
 		}
@@ -60,7 +48,6 @@ func FoodSaveEntryHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc 
 			day = todayStr()
 		}
 
-		// Собираем id меток
 		var tagIDs []int
 		for _, v := range r.Form["tag_id"] {
 			id, err := strconv.Atoi(v)
@@ -72,33 +59,51 @@ func FoodSaveEntryHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc 
 
 		if err := SaveEntry(db, day, tagIDs); err != nil {
 			log.Printf("[FoodSaveEntryHandler] ❌ SaveEntry: %v", err)
-			w.WriteHeader(http.StatusBadRequest)
-			_ = tmpl.ExecuteTemplate(w, "food_save_result", map[string]any{
-				"OK":      false,
-				"Message": "Не удалось сохранить",
-			})
+			http.Error(w, "Не удалось сохранить", http.StatusBadRequest)
 			return
 		}
 
-		_ = tmpl.ExecuteTemplate(w, "food_save_result", map[string]any{
-			"OK":      true,
-			"Message": "Сохранено ✅",
-		})
+		// ✅ После сохранения: очищаем "форму" (выбор) — рендерим food с пустым selected
+		tags, err := ListTags(db)
+		if err != nil {
+			log.Printf("[FoodSaveEntryHandler] ❌ ListTags: %v", err)
+			http.Error(w, "Ошибка загрузки меток", http.StatusInternalServerError)
+			return
+		}
+
+		// Если где-то используешь Selected (например чекбоксы) — сбросим
+		for i := range tags {
+			tags[i].Selected = false
+		}
+
+		data := FoodPageData{
+			Today:        day,
+			Tags:         tags,
+			SelectedTags: []Tag{}, // ✅ пусто = UI чистый
+		}
+
+		if err := tmpl.ExecuteTemplate(w, "food", data); err != nil {
+			log.Printf("[FoodSaveEntryHandler] ❌ template food: %v", err)
+			http.Error(w, "Ошибка отображения страницы", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
 // FoodTagsHandler:
 // - GET  /food/tags  -> вернуть панель управления метками
 // - POST /food/tags  -> добавить метку + обновить панель (и облако через OOB)
-func FoodTagsHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc {
+// FoodTagsPageHandler:
+// - GET  /food/tags  -> показать страницу управления
+// - POST /food/tags  -> добавить метку и перерисовать страницу
+func FoodTagsPageHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Добавление
 		if r.Method == http.MethodPost {
 			if err := r.ParseForm(); err == nil {
 				name := r.FormValue("name")
 				if err := AddTag(db, name); err != nil {
-					// Можно вернуть 400, если хочешь показывать ошибку пользователю
-					log.Printf("[FoodTagsHandler] ❌ AddTag: %v", err)
+					log.Printf("[FoodTagsPageHandler] ❌ AddTag: %v", err)
 				}
 			}
 		}
@@ -109,19 +114,10 @@ func FoodTagsHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		// Панель управления всегда возвращаем в тело ответа
-		if err := tmpl.ExecuteTemplate(w, "food_tags_panel", map[string]any{
+		if err := tmpl.ExecuteTemplate(w, "food_tags_page", map[string]any{
 			"Tags": tags,
 		}); err != nil {
-			log.Printf("[FoodTagsHandler] ❌ template food_tags_panel: %v", err)
-		}
-
-		// Для POST дополнительно обновим облако меток (hx-swap-oob)
-		if r.Method == http.MethodPost {
-			_ = tmpl.ExecuteTemplate(w, "food_cloud_oob", FoodPageData{
-				Today: todayStr(),
-				Tags:  tags,
-			})
+			log.Printf("[FoodTagsPageHandler] ❌ template food_tags_page: %v", err)
 		}
 	}
 }
@@ -131,13 +127,10 @@ func FoodTagDeleteHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
-		if err != nil || id <= 0 {
-			http.Error(w, "Некорректный id", http.StatusBadRequest)
-			return
-		}
-
-		if err := DeleteTag(db, id); err != nil {
-			log.Printf("[FoodTagDeleteHandler] ❌ DeleteTag: %v", err)
+		if err == nil && id > 0 {
+			if err := DeleteTag(db, id); err != nil {
+				log.Printf("[FoodTagDeleteHandler] ❌ DeleteTag: %v", err)
+			}
 		}
 
 		tags, err := ListTags(db)
@@ -146,17 +139,8 @@ func FoodTagDeleteHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc 
 			return
 		}
 
-		// Обновляем панель
-		if err := tmpl.ExecuteTemplate(w, "food_tags_panel", map[string]any{
+		_ = tmpl.ExecuteTemplate(w, "food_tags_page", map[string]any{
 			"Tags": tags,
-		}); err != nil {
-			log.Printf("[FoodTagDeleteHandler] ❌ template food_tags_panel: %v", err)
-		}
-
-		// И облако (OOB)
-		_ = tmpl.ExecuteTemplate(w, "food_cloud_oob", FoodPageData{
-			Today: todayStr(),
-			Tags:  tags,
 		})
 	}
 }

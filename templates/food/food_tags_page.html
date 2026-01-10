@@ -1,0 +1,42 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "food_tags_page" }}
+<div id="content" class="tags-page">
+  <h3>Add Tags</h3>
+
+  <form hx-post="/food/tags" hx-target="#content" hx-swap="outerHTML">
+    <input type="text" name="name" placeholder="Например: хлеб" autocomplete="off">
+    <button type="submit">Add</button>
+
+    <button type="button" hx-get="/food" hx-target="#content" hx-swap="outerHTML">
+      Back
+    </button>
+  </form>
+
+  <hr style="border:0; border-top:0.5px solid rgba(0,0,0,0.2);">
+
+  <div class="tags-list">
+    {{ range .Tags }}
+
+
+
+    <a href="#" class="danger-link" hx-delete="/food/tags/{{ .ID }}" hx-target="#content" hx-swap="outerHTML"
+      hx-push-url="false">
+      <span>{{ .Name }} ❌</span>
+    </a>
+
+    {{ else }}
+    <div class="muted">Пока нет меток.</div>
+    {{ end }}
+  </div>
+</div>
+
+{{ end }}

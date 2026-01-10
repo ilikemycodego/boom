@@ -16,8 +16,9 @@ type Tag struct {
 
 // FoodPageData — данные для шаблона /food
 type FoodPageData struct {
-	Today string
-	Tags  []Tag
+	Today        string
+	Tags         []Tag
+	SelectedTags []Tag
 }
 
 // todayStr возвращает дату в формате YYYY-MM-DD
@@ -73,7 +74,7 @@ func GetSelectedTagIDs(db *sql.DB, day string) (map[int]bool, error) {
 	return selected, rows.Err()
 }
 
-// SaveEntry сохраняет выбранные tagIDs за дату day
+// SaveEntry сохраняет выбранные tagIDs как НОВУЮ запись (каждое сохранение = новая строка)
 func SaveEntry(db *sql.DB, day string, tagIDs []int) error {
 	tx, err := db.Begin()
 	if err != nil {
@@ -81,23 +82,28 @@ func SaveEntry(db *sql.DB, day string, tagIDs []int) error {
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// Создаем запись дня, если ее еще нет
-	if _, err := tx.Exec(`INSERT OR IGNORE INTO food_entries(entry_date) VALUES (?)`, day); err != nil {
+	// ✅ Всегда создаём НОВУЮ запись дня
+	res, err := tx.Exec(`INSERT INTO food_entries(entry_date) VALUES (?)`, day)
+	if err != nil {
 		return err
 	}
 
-	var entryID int
-	if err := tx.QueryRow(`SELECT id FROM food_entries WHERE entry_date = ?`, day).Scan(&entryID); err != nil {
+	entryID64, err := res.LastInsertId()
+	if err != nil {
 		return err
 	}
+	entryID := int(entryID64)
 
-	// Перезаписываем выбранные метки
-	if _, err := tx.Exec(`DELETE FROM food_entry_tags WHERE entry_id = ?`, entryID); err != nil {
-		return err
-	}
-
+	// ✅ Привязываем метки к этой записи
 	for _, tagID := range tagIDs {
-		if _, err := tx.Exec(`INSERT INTO food_entry_tags(entry_id, tag_id) VALUES (?, ?)`, entryID, tagID); err != nil {
+		if tagID <= 0 {
+			continue
+		}
+		// INSERT OR IGNORE — чтобы не падать, если вдруг один тег пришёл дважды
+		if _, err := tx.Exec(
+			`INSERT OR IGNORE INTO food_entry_tags(entry_id, tag_id) VALUES (?, ?)`,
+			entryID, tagID,
+		); err != nil {
 			return err
 		}
 	}

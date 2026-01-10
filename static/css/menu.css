@@ -44,3 +44,10 @@ html, body {
 	text-align: center;
 }
 
+
+.chip-btn {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.chip-btn:focus { outline: none; }

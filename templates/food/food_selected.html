@@ -1,0 +1,27 @@
+<!--  -->
+
+
+
+
+
+
+
+
+<!--  -->
+{{ define "food_selected" }}
+<!-- hidden inputs: они уйдут в /food/entry при "Сохранить" -->
+{{ range . }}
+<input type="hidden" name="tag_id" value="{{ .ID }}">
+{{ end }}
+
+{{ if . }}
+<div class="chips selected">
+    {{ range . }}
+    <span class="chip chip-selected">{{ .Name }}</span>
+    {{ end }}
+</div>
+{{ else }}
+<div class="muted" style="opacity:0.5;">Select a tag:</div>
+{{ end }}
+
+{{ end }}
