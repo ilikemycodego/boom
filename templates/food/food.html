@@ -30,30 +30,31 @@
         </div>
 
     </form>
-    <hr style="border:0; border-top:0.1px solid #ccc;">
-    <div>
-        <span>Satiety level :</span><br>
 
-        <label>Still hungry
+    <br>
+
+    <div>
+        <h3>Satiety level :</h3>
+
+        <span>Still hungry
             <input type="radio" name="satiety" value="hungry">
 
-        </label><br>
+        </span><br>
 
-        <label>Satisfied
+        <span>Satisfied
             <input type="radio" name="satiety" value="ok">
 
-        </label><br>
+        </span><br>
 
-        <label>Too full
+        <span>Too full
             <input type="radio" name="satiety" value="full">
 
-        </label><br>
+        </span><br>
     </div>
 
-    <hr style="border:0; border-top:0.5px solid #ccc;">
+    <br>
 
-
-    <div class="food-actions">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0px;">
 
         <button type="submit">Save</button>
 
@@ -63,7 +64,7 @@
 
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0px;">
 
         <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
 

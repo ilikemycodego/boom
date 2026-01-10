@@ -45,35 +45,6 @@ func ListTags(db *sql.DB) ([]Tag, error) {
 	return out, rows.Err()
 }
 
-// GetSelectedTagIDs возвращает выбранные метки для даты
-func GetSelectedTagIDs(db *sql.DB, day string) (map[int]bool, error) {
-	// Если записи нет — вернем пустой набор
-	var entryID int
-	err := db.QueryRow(`SELECT id FROM food_entries WHERE entry_date = ?`, day).Scan(&entryID)
-	if err == sql.ErrNoRows {
-		return map[int]bool{}, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query(`SELECT tag_id FROM food_entry_tags WHERE entry_id = ?`, entryID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	selected := map[int]bool{}
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			return nil, err
-		}
-		selected[id] = true
-	}
-	return selected, rows.Err()
-}
-
 // SaveEntry сохраняет выбранные tagIDs как НОВУЮ запись (каждое сохранение = новая строка)
 func SaveEntry(db *sql.DB, day string, tagIDs []int) error {
 	tx, err := db.Begin()

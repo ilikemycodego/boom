@@ -8,31 +8,34 @@
 
 
 <!--  -->
-
 {{ define "food__statistics" }}
-<div id="food__statistics">
-    <h3>Food - By Day</h3>
+<div id="content">
+    <h3>Food Log</h3>
 
-    {{ if .Stats }}
-    <div class="stats-list">
-        {{ range .Stats }}
-        <div class="stat-row">
-            <b>{{ .Day }}</b>
-            <div class="muted">
-                {{ if .Tags }}{{ .Tags }}{{ else }}— пусто —{{ end }}
+    {{ if .Days }}
+    {{ range .Days }}
+    <div class="day-block">
+        <div><b>{{ .Day }}</b></div>
+
+        <div class="entries">
+            {{ range .Entries }}
+            <div class="entry-row">
+                <span class="muted">{{ .Time }}</span>
+                <span>{{ if .Tags }}{{ .Tags }}{{ else }}— empty —{{ end }}</span>
+                <span class="muted">#{{ .ID }}</span>
             </div>
+            {{ end }}
         </div>
 
-        <hr style="border:0; border-top:0.1px solid #ccc;">
 
-        {{ end }}
     </div>
+    {{ end }}
     {{ else }}
-    <div class="muted">No saved days yet.</div>
+    <div class="muted">No entries yet.</div>
     {{ end }}
 
+    <br>
 
-
-    <button type="button" hx-get="/" hx-target="body" hx-swap="innerHTML">Back</button>
-
-    {{ end }}
+    <button type="button" hx-get="/food" hx-target="#content" hx-swap="outerHTML">Back</button>
+</div>
+{{ end }}

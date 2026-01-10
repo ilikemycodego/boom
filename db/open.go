@@ -30,6 +30,20 @@ func OpenDB(dbPath string) *sql.DB {
 		log.Fatal("❌ pragma foreign_keys:", err)
 	}
 
+	// Для SQLite обычно полезно держать 1 соединение
+	dbConn.SetMaxOpenConns(1)
+	dbConn.SetMaxIdleConns(1)
+
+	// Чтобы не падать "database is locked" при конкуренции
+	if _, err := dbConn.Exec(`PRAGMA busy_timeout=5000;`); err != nil {
+		log.Fatal("❌ pragma busy_timeout:", err)
+	}
+
+	// Проверка соединения сразу
+	if err := dbConn.Ping(); err != nil {
+		log.Fatal("❌ ping db:", err)
+	}
+
 	// 4) Миграции из SQL-файлов
 	if err := Migrate(dbConn); err != nil {
 		log.Fatal("❌ migrate:", err)

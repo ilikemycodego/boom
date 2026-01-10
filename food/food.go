@@ -71,9 +71,15 @@ func FoodSaveEntryHandler(tmpl *template.Template, db *sql.DB) http.HandlerFunc 
 			return
 		}
 
-		// Если где-то используешь Selected (например чекбоксы) — сбросим
-		for i := range tags {
-			tags[i].Selected = false
+		if len(tagIDs) == 0 {
+			// Ничего не сохраняем, просто перерисуем страницу пустой
+			tags, _ := ListTags(db)
+			_ = tmpl.ExecuteTemplate(w, "food", FoodPageData{
+				Today:        day,
+				Tags:         tags,
+				SelectedTags: []Tag{},
+			})
+			return
 		}
 
 		data := FoodPageData{
