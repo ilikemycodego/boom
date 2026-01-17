@@ -11,6 +11,11 @@ fun Logo(
 ) {
     TopAppBar(
         title = { Text("BOOM") },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface
+        ),
         actions = {
             IconButton(onClick = onToggleTheme) {
                 Text(if (darkTheme) "🌙" else "☀️")
